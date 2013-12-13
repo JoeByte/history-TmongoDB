@@ -1,12 +1,12 @@
 <?php
 
 /**
- * TmongoDB operation class
+ * TmongoDB Operation Class
  *
- * @package		Thendfeel
+ * @package	    Thendfeel
  * @package	    Libraries
- * @author		thendfeel@gmail.com
- * @link		https://github.com/thendfeel/TmongoDB
+ * @author	    thendfeel@gmail.com
+ * @link        https://github.com/thendfeel/TmongoDB
  */
 class TmongoDB
 {
@@ -32,7 +32,10 @@ class TmongoDB
     }
 
     /**
-     * Inint The Class
+     * Init The Class
+     *
+     * @param string $db            
+     * @param string $collection            
      */
     public static function init($db = '', $collection = '')
     {
@@ -52,22 +55,22 @@ class TmongoDB
     /**
      * Fetch From MongoDB
      *
-     * @param unknown $argv            
+     * @param array $argv            
      * @param number $skip            
      * @param number $limit            
-     * @param unknown $sort            
+     * @param array $sort            
      * @return Ambigous <Ambigous, multitype:, multitype:>
      */
     public static function fetch($argv = array(), $skip = 0, $limit = 30, $sort = array())
     {
-        return self::find($argv = array(), $offset = 0, $limit = 30, $order = - 1);
+        return self::find($argv, $skip, $limit, $sort);
     }
 
     /**
      * Fetch One From MongoDB
      *
-     * @param unknown $argv            
-     * @param unknown $fields            
+     * @param array $argv            
+     * @param array $fields            
      * @return multitype: boolean
      */
     public static function fetchOne($argv = array(), $fields = array())
@@ -99,10 +102,10 @@ class TmongoDB
     /**
      * Fetch From Mongodb
      *
-     * @param unknown $argv            
+     * @param array $argv            
      * @param number $skip            
      * @param number $limit            
-     * @param unknown $sort            
+     * @param array $sort            
      * @return Ambigous <multitype:, multitype:>|boolean
      */
     public static function find($argv = array(), $skip = 0, $limit = 30, $sort = array())
@@ -136,8 +139,8 @@ class TmongoDB
     /**
      * Update MongoDB
      *
-     * @param unknown $argv            
-     * @param unknown $newData            
+     * @param array $argv            
+     * @param array $newData            
      * @param string $options            
      */
     public static function update($argv = array(), $newData = array(), $options = 'multiple')
@@ -153,8 +156,8 @@ class TmongoDB
     /**
      * Update MongoDB By Id
      *
-     * @param unknown $_id            
-     * @param unknown $newData            
+     * @param string $_id            
+     * @param array $newData            
      */
     public static function updateById($_id, $newData = array())
     {
@@ -181,7 +184,7 @@ class TmongoDB
     /**
      * Remove All From Mongodb
      *
-     * @param unknown $argv            
+     * @param array $argv            
      */
     public static function remove($argv = array())
     {
@@ -192,7 +195,7 @@ class TmongoDB
     /**
      * Remove One By Id From Mongodb
      *
-     * @param unknown $_id            
+     * @param string $_id            
      * @return Ambigous <boolean, multitype:>
      */
     public static function removeById($_id)
@@ -205,7 +208,7 @@ class TmongoDB
     /**
      * Remove One From Mongodb
      *
-     * @param unknown $argv            
+     * @param array $argv            
      */
     public static function removeOne($argv = array())
     {
@@ -218,7 +221,7 @@ class TmongoDB
     /**
      * Mongodb Object To Array
      *
-     * @param unknown $data            
+     * @param array $data            
      * @return multitype:
      */
     private static function toArray($data)
