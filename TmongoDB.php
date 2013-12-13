@@ -2,11 +2,14 @@
 
 /**
  * TmongoDB Operation Class
+ * TMONGODB IS A LIBRARY FOR MONGODB OPERATION. IT IS FAST AND EASY TO USE.
  *
- * @package	    Thendfeel
- * @package	    Libraries
- * @author	    thendfeel@gmail.com
+ * @package     Thendfeel/TmongoDB
+ * @author      thendfeel@gmail.com
  * @link        https://github.com/thendfeel/TmongoDB
+ * @project     http://project.uacool.com
+ * @site        http://www.uacool.com
+ * @created     2013-12-13
  */
 class TmongoDB
 {
