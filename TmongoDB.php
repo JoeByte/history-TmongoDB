@@ -86,7 +86,7 @@ class TmongoDB
     }
 
     /**
-     * Fetch One From MongoDB
+     * Fetch All From MongoDB
      *
      * @param array $argv            
      * @param array $fields            
@@ -125,7 +125,7 @@ class TmongoDB
     }
 
     /**
-     * Find By MongoId
+     * Fetch By MongoId
      *
      * @param string $_id            
      * @return Ambigous <Ambigous, boolean, multitype:>
@@ -196,7 +196,7 @@ class TmongoDB
     }
 
     /**
-     * Remove One By Id From Mongodb
+     * Remove By Id From Mongodb
      *
      * @param string $_id            
      * @return Ambigous <boolean, multitype:>
