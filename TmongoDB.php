@@ -14,19 +14,21 @@
 class TmongoDB
 {
 
+    protected static $_db = 'test';
+
+    protected static $_collection = 'user';
+
     protected static $_mongoDB;
 
     /**
      * Config For MongDB
      *
-     * @var unknown
+     * @var array
      */
     protected static $_config = array(
         'host' => 'localhost',
         'port' => '27017',
-        'password' => NULL,
-        'db' => 'test',
-        'collection' => 'user'
+        'password' => NULL
     );
 
     public function __construct($db = '', $collection = '')
@@ -50,7 +52,7 @@ class TmongoDB
             if ($db && $collection) {
                 self::$_mongoDB = $_mongoDB->selectCollection($db, $collection);
             } else {
-                self::$_mongoDB = $_mongoDB->selectCollection($config['db'], $config['collection']);
+                self::$_mongoDB = $_mongoDB->selectCollection(static::$_db, static::$_collection);
             }
         }
     }
