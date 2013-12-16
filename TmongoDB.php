@@ -58,53 +58,6 @@ class TmongoDB
     }
 
     /**
-     * Fetch From MongoDB
-     *
-     * @param array $argv            
-     * @param number $skip            
-     * @param number $limit            
-     * @param array $sort            
-     * @return Ambigous <Ambigous, multitype:, multitype:>
-     */
-    public static function fetch($argv = array(), $skip = 0, $limit = 30, $sort = array())
-    {
-        return self::find($argv, $skip, $limit, $sort);
-    }
-
-    /**
-     * Fetch One From MongoDB
-     *
-     * @param array $argv            
-     * @param array $fields            
-     * @return multitype: boolean
-     */
-    public static function fetchOne($argv = array(), $fields = array())
-    {
-        self::init();
-        if ($argv) {
-            return self::cleanId(self::$_mongoDB->findOne($argv, $fields));
-        }
-        return FALSE;
-    }
-
-    /**
-     * Fetch All From MongoDB
-     *
-     * @param array $argv            
-     * @param array $fields            
-     * @return Ambigous <multitype:, multitype:>|boolean
-     */
-    public static function fetchAll($argv = array(), $fields = array())
-    {
-        self::init();
-        if ($argv) {
-            $result = self::$_mongoDB->find($argv, $fields);
-            return self::toArray($result);
-        }
-        return FALSE;
-    }
-
-    /**
      * Fetch From Mongodb
      *
      * @param array $argv            
@@ -135,10 +88,43 @@ class TmongoDB
     public static function findById($_id = '')
     {
         if (is_string($_id)) {
-            return self::fetchOne(array(
+            return self::findOne(array(
                 '_id' => new MongoId($_id)
             ));
         }
+    }
+
+    /**
+     * Fetch One From MongoDB
+     *
+     * @param array $argv            
+     * @param array $fields            
+     * @return multitype: boolean
+     */
+    public static function findOne($argv = array(), $fields = array())
+    {
+        self::init();
+        if ($argv) {
+            return self::cleanId(self::$_mongoDB->findOne($argv, $fields));
+        }
+        return FALSE;
+    }
+
+    /**
+     * Fetch All From MongoDB
+     *
+     * @param array $argv            
+     * @param array $fields            
+     * @return Ambigous <multitype:, multitype:>|boolean
+     */
+    public static function findAll($argv = array(), $fields = array())
+    {
+        self::init();
+        if ($argv) {
+            $result = self::$_mongoDB->find($argv, $fields);
+            return self::toArray($result);
+        }
+        return FALSE;
     }
 
     /**
@@ -184,7 +170,6 @@ class TmongoDB
     {
         self::init();
         $s = '$id';
-        $data['_id'] = new MongoId();
         self::$_mongoDB->insert($data);
         return $data['_id']->$s;
     }
@@ -223,6 +208,30 @@ class TmongoDB
         self::init();
         return self::$_mongoDB->remove($argv, array(
             "justOne" => true
+        ));
+    }
+
+    /**
+     * Remove Field From MongoDB
+     *
+     * @param string $_id            
+     * @param array $field            
+     */
+    public static function removeFieldById($_id, $field = array())
+    {
+        self::init();
+        $unSetfield = array();
+        foreach ($field as $key => $value) {
+            if (is_int($key)) {
+                $unSetfield[$value] = TRUE;
+            } else {
+                $unSetfield[$key] = $value;
+            }
+        }
+        return self::$_mongoDB->update(array(
+            '_id' => new MongoId($_id)
+        ), array(
+            '$unset' => $unSetfield
         ));
     }
 
