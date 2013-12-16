@@ -183,7 +183,10 @@ class TmongoDB
     public static function insert($data = array())
     {
         self::init();
-        return self::$_mongoDB->insert($data);
+        $s = '$id';
+        $data['_id'] = new MongoId();
+        self::$_mongoDB->insert($data);
+        return $data['_id']->$s;
     }
 
     /**
