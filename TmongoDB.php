@@ -82,7 +82,7 @@ class TmongoDB
     {
         self::init();
         if ($argv) {
-            return self::$_mongoDB->findOne($argv, $fields);
+            return self::cleanId(self::$_mongoDB->findOne($argv, $fields));
         }
         return FALSE;
     }
@@ -231,6 +231,26 @@ class TmongoDB
      */
     private static function toArray($data)
     {
-        return iterator_to_array($data);
+        return self::cleanId(iterator_to_array($data));
+    }
+
+    /**
+     * Clear Mongo _id
+     *
+     * @param array $data            
+     * @return void unknown
+     */
+    private static function cleanId($data)
+    {
+        $s = '$id';
+        if (isset($data['_id'])) {
+            $data['_id'] = $data['_id']->$s;
+            return $data;
+        } else {
+            foreach ($data as $key => $value) {
+                $data[$key]['_id'] = $value['_id']->$s;
+            }
+        }
+        return $data;
     }
 }
