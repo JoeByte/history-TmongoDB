@@ -258,7 +258,7 @@ class TmongoDB
         if (isset($data['_id'])) {
             $data['_id'] = $data['_id']->$s;
             return $data;
-        } else {
+        } elseif ($data) {
             foreach ($data as $key => $value) {
                 $data[$key]['_id'] = $value['_id']->$s;
             }
