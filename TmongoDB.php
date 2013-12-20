@@ -18,6 +18,8 @@ class TmongoDB
 
     protected static $_collection = 'user';
 
+    protected static $_validate = array();
+
     protected static $_mongoDB;
 
     /**
@@ -27,8 +29,7 @@ class TmongoDB
      */
     protected static $_config = array(
         'host' => 'localhost',
-        'port' => '27017',
-        'password' => NULL
+        'port' => '27017'
     );
 
     public function __construct($db = '', $collection = '')
@@ -69,6 +70,7 @@ class TmongoDB
     public static function find($argv = array(), $skip = 0, $limit = 30, $sort = array())
     {
         self::init();
+        $argv = self::validate($argv);
         if ($argv) {
             $result = self::$_mongoDB->find($argv)
                 ->skip($skip)
@@ -104,6 +106,7 @@ class TmongoDB
     public static function findOne($argv = array(), $fields = array())
     {
         self::init();
+        $argv = self::validate($argv);
         if ($argv) {
             return self::cleanId(self::$_mongoDB->findOne($argv, $fields));
         }
@@ -120,6 +123,7 @@ class TmongoDB
     public static function findAll($argv = array(), $fields = array())
     {
         self::init();
+        $argv = self::validate($argv);
         if ($argv) {
             $result = self::$_mongoDB->find($argv, $fields);
             return self::toArray($result);
@@ -137,6 +141,8 @@ class TmongoDB
     public static function update($argv = array(), $newData = array(), $options = 'multiple')
     {
         self::init();
+        $argv = self::validate($argv);
+        $newData = self::validate($newData);
         self::$_mongoDB->update($argv, array(
             '$set' => $newData
         ), array(
@@ -169,6 +175,7 @@ class TmongoDB
     public static function insert($data = array())
     {
         self::init();
+        $data = self::validate($data);
         $s = '$id';
         self::$_mongoDB->insert($data);
         return $data['_id']->$s;
@@ -182,6 +189,7 @@ class TmongoDB
     public static function remove($argv = array())
     {
         self::init();
+        $argv = self::validate($argv);
         return self::$_mongoDB->remove($argv);
     }
 
@@ -206,6 +214,7 @@ class TmongoDB
     public static function removeOne($argv = array())
     {
         self::init();
+        $argv = self::validate($argv);
         return self::$_mongoDB->remove($argv, array(
             "justOne" => true
         ));
@@ -264,5 +273,45 @@ class TmongoDB
             }
         }
         return $data;
+    }
+
+    /**
+     * Validate Data Callbak Function
+     *
+     * @param array $argv            
+     */
+    private static function validate($argv)
+    {
+        if (static::$_validate) {
+            try {
+                foreach (static::$_validate as $arg => $validate) {
+                    if (is_array($argv) && array_key_exists(strval($arg), $argv)) {
+                        foreach ($validate as $key => $value) {
+                            if (is_int($key)) {
+                                $call = preg_split('/[\:]+|\-\>/i', $value);
+                                if (count($call) == 1) {
+                                    $argv[$arg] = call_user_func($call['0'], $argv[$arg]);
+                                } else {
+                                    $argv[$arg] = call_user_func_array(array(
+                                        $call['0'],
+                                        $call['1']
+                                    ), array(
+                                        $argv[$arg]
+                                    ));
+                                }
+                            } elseif (strtolower($key) == 'length') {
+                                $length = strlen($argv[$arg]);
+                                if ($length < $value['min'] || $length > $value['max']) {
+                                    throw new Exception('Error: The length of ' . $arg . ' is not matched');
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception $e) {
+                exit($e->getMessage());
+            }
+        }
+        return $argv;
     }
 }
