@@ -24,7 +24,7 @@ Installation
 TmongoDB can be downloaded at http://project.uacool.com
 You can also checkout the latest source code from GitHub at https://github.com/thendfeel/TmongoDB
 
- 'Yaf Framework' 
+'Yaf Framework' 
 * There is two methods to use TmongoDB in Yaf, put TmongoDB into the public libaray or the local library(./application/library/)
 * The example is put the TmongoDB into the public library /Uacool/TmongoDB.php and change the class name to Uacool_TmongoDB
 * The code is how it is write in Model
@@ -43,7 +43,8 @@ You can also checkout the latest source code from GitHub at https://github.com/t
         }
     }
 
- 'Others' 
+
+'Others' 
 ...
 
 
