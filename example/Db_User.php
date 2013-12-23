@@ -17,18 +17,19 @@ class Db_User extends TmongoDB
     // 类方法作为回调函数时，类名和方法名用 :: 分隔 也可以用 -> 分隔
     protected static $_validate = array(
         'uid' => array(
-            'Filter::isString', /* callback function, use the function isString() in class Filter */
-            'Length' => array(
-                "min" => 6,
-                "max" => 10
-            )
+            'type' => 'int',
+            'min' => 6,
+            'max' => 10,
+            'func' => 'Filter::isString'/* callback function, use the function isString() in class Filter */
         ),
         'time' => array(
-            'function1',     /* callback function 1 */ 
-            'function2'   /* callback function 2 */ 
+            'type' => 'int',
+            'min' => 10,
+            'max' => 10,
+            'func' => 'Filter->isIntval' /* callback function */ 
         ),
         'email' => array(
-            'Filter->isEmail'   /* callback function 2 */ 
+            'func' => 'function2'   /* callback function 2 */ 
         ),
         /* ....some more filed validate */ 
     );
