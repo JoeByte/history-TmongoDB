@@ -7,7 +7,7 @@
  * @package     Thendfeel/TmongoDB
  * @author      thendfeel@gmail.com
  * @link        https://github.com/thendfeel/TmongoDB
- * @project     http://project.uacool.com
+ * @project     http://dev.uacool.com
  * @site        http://www.uacool.com
  * @created     2013-12-13
  */
@@ -280,38 +280,54 @@ class TmongoDB
      *
      * @param array $argv            
      */
-    private static function validate($argv)
+    private static function validate($data)
     {
         if (static::$_validate) {
-            try {
-                foreach (static::$_validate as $arg => $validate) {
-                    if (is_array($argv) && array_key_exists(strval($arg), $argv)) {
-                        foreach ($validate as $key => $value) {
-                            if (is_int($key)) {
+            foreach (static::$_validate as $arg => $validate) {
+                if (is_array($data) && array_key_exists(strval($arg), $data)) {
+                    foreach ($validate as $key => $value) {
+                        switch (strtolower($key)) {
+                            case 'type':
+                                if ($value == 'int') {
+                                    $data[$arg] = (int) $data[$arg];
+                                } elseif ($value == 'string') {
+                                    $data[$arg] = (string) $data[$arg];
+                                } elseif ($value == 'bool') {
+                                    $data[$arg] = (bool) $data[$arg];
+                                } elseif ($value == 'float') {
+                                    $data[$arg] = (float) $data[$arg];
+                                } elseif ($value == 'array') {
+                                    $data[$arg] = (array) $data[$arg];
+                                }
+                                break;
+                            case 'min':
+                                if (strlen($data[$arg]) < $value) {
+                                    exit('Error: The length of ' . $arg . ' is not matched');
+                                }
+                                break;
+                            case 'max':
+                                if (strlen($data[$arg]) > $value) {
+                                    exit('Error: The length of ' . $arg . ' is not matched');
+                                }
+                                break;
+                            case 'func':
                                 $call = preg_split('/[\:]+|\-\>/i', $value);
                                 if (count($call) == 1) {
-                                    $argv[$arg] = call_user_func($call['0'], $argv[$arg]);
+                                    $data[$arg] = call_user_func($call['0'], $data[$arg]);
                                 } else {
-                                    $argv[$arg] = call_user_func_array(array(
+                                    $data[$arg] = call_user_func_array(array(
                                         $call['0'],
                                         $call['1']
                                     ), array(
-                                        $argv[$arg]
+                                        $data[$arg]
                                     ));
                                 }
-                            } elseif (strtolower($key) == 'length') {
-                                $length = strlen($argv[$arg]);
-                                if ($length < $value['min'] || $length > $value['max']) {
-                                    throw new Exception('Error: The length of ' . $arg . ' is not matched');
-                                }
-                            }
+                                break;
                         }
                     }
                 }
-            } catch (Exception $e) {
-                exit($e->getMessage());
             }
         }
-        return $argv;
+        return $data;
     }
 }
