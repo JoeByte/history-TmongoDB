@@ -4,7 +4,7 @@
  * TmongoDB Operation Class
  * TMONGODB IS A LIBRARY FOR MONGODB OPERATION. IT IS FAST AND EASY TO USE.
  *
- * @package     Thendfeel/TmongoDB
+ * @package     Uacool/TmongoDB
  * @author      thendfeel@gmail.com
  * @link        https://github.com/thendfeel/TmongoDB
  * @project     http://dev.uacool.com
@@ -29,7 +29,9 @@ class TmongoDB
      */
     protected static $_config = array(
         'host' => 'localhost',
-        'port' => '27017'
+        'port' => '27017',
+        'user' => NULL,
+        'password' => NULL
     );
 
     public function __construct($db = '', $collection = '')
@@ -47,7 +49,12 @@ class TmongoDB
     {
         if (! self::$_mongoDB) {
             $config = self::$_config;
-            $_mongoDB = new Mongo("mongodb://{$config['host']}:{$config['port']}", array(
+            $conStr = "mongodb://";
+            if ($config['user'] && $config['password']) {
+                $conStr .= "{$config['user']}:{$config['password']}@";
+            }
+            $conStr .= "{$config['host']}:{$config['port']}";
+            $_mongoDB = new Mongo($conStr, array(
                 "connect" => false
             ));
             if ($db && $collection) {
