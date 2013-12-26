@@ -66,6 +66,32 @@ class TmongoDB
     }
 
     /**
+     * Set Db & Collection
+     *
+     * @param string $db            
+     * @param string $collection            
+     */
+    public static function setDb($db = NULL, $collection = NULL)
+    {
+        if ($db && $collection) {
+            static::$_db = $db;
+            static::$_collection = $collection;
+        }
+    }
+
+    /**
+     * Set Collection
+     *
+     * @param string $collection            
+     */
+    public static function setCollection($collection = NULL)
+    {
+        if ($collection) {
+            static::$_collection = $collection;
+        }
+    }
+
+    /**
      * Fetch From Mongodb
      *
      * @param array $argv            
