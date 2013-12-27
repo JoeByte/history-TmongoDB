@@ -7,9 +7,17 @@
  * @package     Uacool/TmongoDB
  * @author      thendfeel@gmail.com
  * @link        https://github.com/thendfeel/TmongoDB
- * @project     http://dev.uacool.com
+ * @example     http://dev.uacool.com
+ * @copyright   uacool.com
  * @site        http://www.uacool.com
  * @created     2013-12-13
+ * 
+ * Manual
+ * http://us2.php.net/mongo
+ * 
+ * SQL to Mongo Mapping Chart
+ * http://us2.php.net/manual/en/mongo.sqltomongo.php
+ * 
  */
 class TmongoDB
 {
@@ -76,6 +84,7 @@ class TmongoDB
         if ($db && $collection) {
             static::$_db = $db;
             static::$_collection = $collection;
+            self::$_mongoDB = NULL;
         }
     }
 
@@ -88,6 +97,7 @@ class TmongoDB
     {
         if ($collection) {
             static::$_collection = $collection;
+            self::$_mongoDB = NULL;
         }
     }
 
@@ -165,6 +175,25 @@ class TmongoDB
     }
 
     /**
+     * Find And Modify
+     *
+     * @param array $argv            
+     * @param array $newData            
+     * @param array|NULL $fields            
+     * @param array $options            
+     * @see http://us2.php.net/manual/en/mongocollection.findandmodify.php
+     */
+    public static function findAndModify($argv = array(), $newData = array(), $fields = array(), $options = NULL)
+    {
+        self::init();
+        $argv = self::validate($argv);
+        $newData = self::validate($newData);
+        return self::$_mongoDB->findAndModify($argv, array(
+            '$set' => $newData
+        ), $fields, $options);
+    }
+
+    /**
      * Update MongoDB
      *
      * @param array $argv            
@@ -176,7 +205,7 @@ class TmongoDB
         self::init();
         $argv = self::validate($argv);
         $newData = self::validate($newData);
-        self::$_mongoDB->update($argv, array(
+        return self::$_mongoDB->update($argv, array(
             '$set' => $newData
         ), array(
             "{$options}" => true
@@ -275,6 +304,18 @@ class TmongoDB
         ), array(
             '$unset' => $unSetfield
         ));
+    }
+
+    /**
+     * Count
+     *
+     * @param unknown $argv            
+     */
+    public static function count($argv = array())
+    {
+        self::init();
+        $argv = self::validate($argv);
+        return self::$_mongoDB->count($argv);
     }
 
     /**
